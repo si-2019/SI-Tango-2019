@@ -15,5 +15,11 @@
   "bugs": {
     "url": "https://github.com/si-2019/SI-Tango-2019/issues"
   },
-  "homepage": "https://github.com/si-2019/SI-Tango-2019#readme"
+  "homepage": "https://github.com/si-2019/SI-Tango-2019#readme",
+  "dependencies": {
+    "express": "^4.16.4",
+    "mysql": "^2.16.0",
+    "mysql2": "^1.6.5",
+    "sequelize": "^5.3.5"
+  }
 }
