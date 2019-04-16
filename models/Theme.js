@@ -5,7 +5,9 @@ module.exports = function(sequelize, DataTypes) {
     idTheme: {
       type: DataTypes.INTEGER(10),
       allowNull: false,
-      primaryKey: true
+      primaryKey: true,
+            autoIncrement: true
+
     },
     idPredmet: {
       type: DataTypes.INTEGER(10),
