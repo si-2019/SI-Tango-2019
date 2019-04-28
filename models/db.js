@@ -13,5 +13,6 @@ db.comment = sequelize.import(__dirname+'/Comment.js');
 db.theme = sequelize.import(__dirname+'/Theme.js');
 db.reply = sequelize.import(__dirname+'/Reply.js');
 db.sticky = sequelize.import(__dirname+'/Sticky.js');
+db.korisnik = sequelize.import(__dirname+'/Korisnik.js');
 
 module.exports=db;

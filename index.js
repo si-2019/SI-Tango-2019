@@ -46,4 +46,43 @@ app.post('/addTheme', function(req, res) {
 		});
 });
 
+app.get('/getThemes/:idPredmeta', function(req, res) {
+	var idPredmeta = req.params.idPredmeta;
+	var themesResp = [];
+	promise = [];
+	promise2 = [];
+	promise.push(
+		db.theme.findAll({ where: { idPredmet: idPredmeta } , attributes: ['idTheme', 'idPredmet', 'idUser','description','title',	'timeCreated' ]}).then(function (themes) {
+			themesResp = JSON.parse(JSON.stringify(themes));
+			return new Promise();
+		}).catch(function(err){})
+	);
+	Promise.all(promise).then(function (teme){
+		themesResp.forEach(t => {
+			promise2.push(db.comment.findAll({where: {idTheme: t.idTheme}}).then(function (comment){
+				t.brojKomentara = comment.length;
+				return new Promise();
+			}).catch(function(err){}));
+		});
+
+				
+		Promise.all(promise2).then(function(item){
+			res.send(themesResp);
+		});
+	});
+});
+
+
+app.get('/getUser/:idUser', function(req, res) {
+	var idUser = req.params.idUser;
+	promise = [];
+		db.korisnik.findOne({ where: { id: idUser } , attributes: ['id', 'ime', 'prezime','fotografija']}).then(function (user) {
+			console.log(user);
+			res.send(user);
+
+		}).catch(function(err){
+			console.log(err);
+		});
+});
+
 app.listen(PORT);
