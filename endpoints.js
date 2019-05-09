@@ -1,4 +1,4 @@
-const initializeEndpoints = (app) => {
+const initializeEndpoints = (app,db) => {
     /**
  * @swagger
  * /addTheme:
