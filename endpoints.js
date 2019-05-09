@@ -39,6 +39,12 @@ app.get('/getThemes/:idPredmeta', function(req, res) {
 				t.brojKomentara = comment.length;
 				return new Promise();
 			}).catch(function(err){}));
+			promise2.push(db.korisnik.findOne({ where: { id: t.idUser } , attributes: ['id', 'ime', 'prezime','fotografija']}).then(function (user) {
+				t.korisnik=user;
+				return new Promise();
+			}).catch(function(err){
+			//	console.log(err);
+			}));
 		});
 
 				
@@ -47,7 +53,6 @@ app.get('/getThemes/:idPredmeta', function(req, res) {
 		});
 	});
 });
-
 }
 
 module.exports = initializeEndpoints;
