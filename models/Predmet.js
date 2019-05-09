@@ -2,7 +2,7 @@
 
 module.exports = function(sequelize, DataTypes) {
   return sequelize.define('Predmet', {
-    idPredmet: {
+    id: {
       type: DataTypes.INTEGER(10),
       allowNull: false,
       primaryKey: true
