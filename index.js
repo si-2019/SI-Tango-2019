@@ -38,5 +38,9 @@ app.get('/getUser/:idUser', function(req, res) {
 			console.log(err);
 		});
 });
+app.delete('/deleteTheme/:idTheme', function(req, res) {
+	var idTeme = req.params.idTheme;
+		db.theme.destroy({ where: { idTheme: idTeme }});
+});
 
 app.listen(PORT);
