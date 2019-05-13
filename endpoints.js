@@ -81,5 +81,4 @@ app.post('/addcomment', function(req, res) {
       });
 });
 }
-
 module.exports = initializeEndpoints;
