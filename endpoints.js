@@ -53,6 +53,15 @@ app.get('/getThemes/:idPredmeta', function(req, res) {
 		});
 	});
 });
-}
+
+
+app.get('/getComments/:idTeme', function(req, res) {
+	var idTeme = req.params.idTeme;
+    db.comment.findAll({ where: { idTheme: idTeme } }).then(function (komentariLista) {
+			var odgovor = JSON.stringify(komentariLista);
+			res.writeHead(200,{"Content-Type":"application/json"});
+			res.end(odgovor);
+    });
+});}
 
 module.exports = initializeEndpoints;
