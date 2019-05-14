@@ -53,6 +53,59 @@ app.get('/getThemes/:idPredmeta', function(req, res) {
 		});
 	});
 });
-}
 
+    /**
+ * @swagger
+ * /getComments/:idTheme
+ *    get:
+ *      description: Dobavlja komentare
+ * 	  parameters:
+       - name: params
+         in: req.params
+         schema:
+           type: object
+           properties:
+             idTheme:
+              type: string
+ */
+app.get('/getComments/:idTheme', function(req, res) {
+	var idTeme = req.params.idTheme;
+    db.comment.findAll({ where: { idTheme: idTeme } }).then(function (komentariLista) {
+			var odgovor = JSON.stringify(komentariLista);
+			res.writeHead(200,{"Content-Type":"application/json"});
+			res.end(odgovor);
+    });
+});
+
+    /**
+ * @swagger
+ * /addTheme:
+ *    post:
+ *      description: Dodaje novu temu
+ *    parameters:
+       - name: body
+         in: body
+         schema:
+           type: object
+           properties:
+             idUser:
+              type: string
+             idTheme:
+              type: string
+             text:
+              type: string
+             timeCreated:
+              type: date
+ */
+app.post('/addComment', function(req, res) {
+    db.comment.create({idUser: req.body.IdUser, idTheme: req.body.IdTheme, text: req.body.text, timeCreated: Date.now()}).then(([user, created]) => {
+          if (created) {
+              console.log("Uspjesno kreiran komentar");
+          }
+          else{
+              console.log("Greska");	
+          }    	
+      });
+});
+}
 module.exports = initializeEndpoints;
