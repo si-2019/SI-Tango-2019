@@ -2,8 +2,32 @@ const initializeEndpoints = (app,db) => {
     /**
  * @swagger
  * /addTheme:
- *    post:
- *      description: Dodaje novu temu
+ *      post:
+ *          description: Dodaje novu temu
+ *      parameters:
+ *       - name: body
+ *         schema:
+ *          type: object
+ *          properties:
+ *            idTheme:
+ *             type: string
+ *            idPredmeta:
+ *             type: string
+ *            idUser:
+ *             type: string
+ *            title:
+ *             type: string
+ *            descriptions:
+ *             type: string
+ *            closed:
+ *             type: boolean
+ *            created:
+ *             type: date     
+ *         responses:
+ *             200:
+ *               description: Tema je dodana u bazu
+ *             400:
+ *               description: Došlo je do greške
  */
 app.post('/addTheme', function(req, res) {
     db.theme.findOrCreate({where: {title: req.body.title} , defaults: {description: req.body.description, closed: false,
@@ -21,6 +45,20 @@ app.post('/addTheme', function(req, res) {
  * /getThemes/:idPredmeta:
  *    get:
  *      description: Vraca temu za predmet sa id-em idPredmeta 
+ *    parameters:
+ *             - name: params
+ *               in: req.params
+ *               schema:
+ *               type: object
+ *               properties:
+ *                   idPredmeta:
+ *                   type: string
+ *               responses:
+ *                  200:
+ *                      description: Vracena lista tema
+ *                  400:
+ *                      description: Došlo je do greške
+
  */
 app.get('/getThemes/:idPredmeta', function(req, res) {
 	var idPredmeta = req.params.idPredmeta;
@@ -28,7 +66,7 @@ app.get('/getThemes/:idPredmeta', function(req, res) {
 	promise = [];
 	promise2 = [];
 	promise.push(
-		db.theme.findAll({ where: { idPredmet: idPredmeta } , attributes: ['idTheme', 'idPredmet', 'idUser','description','title',	'timeCreated' ]}).then(function (themes) {
+		db.theme.findAll({ where: { idPredmet: idPredmeta } , attributes: ['idTheme', 'idPredmet', 'idUser','description','title',	'timeCreated', 'closed' ]}).then(function (themes) {
 			themesResp = JSON.parse(JSON.stringify(themes));
 			return new Promise();
 		}).catch(function(err){})
@@ -79,9 +117,9 @@ app.get('/getComments/:idTheme', function(req, res) {
  
     /**
  * @swagger
- * /addTheme:
+ * /addComment:
  *    post:
- *      description: Dodaje novu temu
+ *      description: Dodaje novi komentar
  *    parameters:
  *      - name: body
  *        in: body
@@ -129,6 +167,46 @@ app.post('/closeTheme/:idTheme', function(req, res) {
         closed: true
           }, {
         where: { idTheme: req.params.idTheme },
+        returning: true,
+        plain: true
+      })
+      .then(function (result) {
+        res.writeHead(200,{"Content-Type":"application/json"});
+        res.end();
+      });
+});
+
+/**
+ * @swagger
+ * /editTheme:
+ *    post:
+ *      description: Edituje temu u bazi
+ * 	  parameters:
+ *      - name: body
+ *        in: req.body
+ *        schema:
+ *          type: object
+ *          properties:
+ *            idTheme:
+ *             type: string
+ *            idUser:
+ *             type: string
+ *            title:
+ *             type: string
+ *            idPredmet:
+ *             type: string
+ *            closed:
+ *             type: date
+ */
+app.post('/editTheme', function(req, res) {
+    db.theme.update({
+        title: req.body.title,
+        description: req.body.description, 
+        closed:  req.body.closed,
+        idPredmet:req.body.idPredmet,
+        idUser:req.body.idUser
+    },{
+        where: { idTheme: req.body.idTheme },
         returning: true,
         plain: true
       })
