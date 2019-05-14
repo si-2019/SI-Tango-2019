@@ -76,7 +76,7 @@ app.get('/getComments/:idTheme', function(req, res) {
 			res.end(odgovor);
     });
 });
-
+ 
     /**
  * @swagger
  * /addTheme:

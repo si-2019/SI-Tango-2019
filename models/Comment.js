@@ -5,14 +5,16 @@ module.exports = function(sequelize, DataTypes) {
     idComment: {
       type: DataTypes.INTEGER(10),
       allowNull: false,
-      primaryKey: true
+      primaryKey: true,
+      autoIncrement: true
+
     },
     idUser: {
       type: DataTypes.INTEGER(10),
       allowNull: false,
       references: {
         model: 'Korisnik',
-        key: 'idkorisnik'
+        key: 'id'
       }
     },
     idTheme: {
