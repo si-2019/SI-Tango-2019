@@ -54,9 +54,22 @@ app.get('/getThemes/:idPredmeta', function(req, res) {
 	});
 });
 
-
-app.get('/getComments/:idTeme', function(req, res) {
-	var idTeme = req.params.idTeme;
+    /**
+ * @swagger
+ * /getComments/:idTheme
+ *    get:
+ *      description: Dobavlja komentare
+ * 	  parameters:
+       - name: params
+         in: req.params
+         schema:
+           type: object
+           properties:
+             idTheme:
+              type: string
+ */
+app.get('/getComments/:idTheme', function(req, res) {
+	var idTeme = req.params.idTheme;
     db.comment.findAll({ where: { idTheme: idTeme } }).then(function (komentariLista) {
 			var odgovor = JSON.stringify(komentariLista);
 			res.writeHead(200,{"Content-Type":"application/json"});
@@ -64,19 +77,33 @@ app.get('/getComments/:idTeme', function(req, res) {
     });
 });
  
-app.post('/addcomment', function(req, res) {
-	var idTheme = req.body.idTheme;
-	var idUser = req.body.idUser;	 
-	var text = req.body.text;
-	var timeCreated = Date.now();
-
-    db.comment.findOrCreate({where:  {} , defaults:{idTheme: req.body.idTheme, text: req.body.text,
-     timeCreated:Date.now(), idUser:req.body.idUser}}).then(([ created]) => {
+    /**
+ * @swagger
+ * /addTheme:
+ *    post:
+ *      description: Dodaje novu temu
+ *    parameters:
+       - name: body
+         in: body
+         schema:
+           type: object
+           properties:
+             idUser:
+              type: string
+             idTheme:
+              type: string
+             text:
+              type: string
+             timeCreated:
+              type: date
+ */
+app.post('/addComment', function(req, res) {
+    db.comment.create({idUser: req.body.IdUser, idTheme: req.body.IdTheme, text: req.body.text, timeCreated: Date.now()}).then(([user, created]) => {
           if (created) {
-              console.log("Uspjesno kreirana tema");
+              console.log("Uspjesno kreiran komentar");
           }
           else{
-              console.log("Tema sa datim nazivom vec postoji");	
+              console.log("Greska");	
           }    	
       });
 });
