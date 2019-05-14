@@ -18,7 +18,7 @@ app.post('/addTheme', function(req, res) {
 });
    /**
  * @swagger
- * //getThemes/:idPredmeta:
+ * /getThemes/:idPredmeta:
  *    get:
  *      description: Vraca temu za predmet sa id-em idPredmeta 
  */
@@ -56,17 +56,17 @@ app.get('/getThemes/:idPredmeta', function(req, res) {
 
     /**
  * @swagger
- * /getComments/:idTheme
+ * /getComments/:idTheme:
  *    get:
  *      description: Dobavlja komentare
  * 	  parameters:
-       - name: params
-         in: req.params
-         schema:
-           type: object
-           properties:
-             idTheme:
-              type: string
+ *      - name: params
+ *        in: req.params
+ *        schema:
+ *          type: object
+ *          properties:
+ *            idTheme:
+ *             type: string
  */
 app.get('/getComments/:idTheme', function(req, res) {
 	var idTeme = req.params.idTheme;
@@ -83,19 +83,19 @@ app.get('/getComments/:idTheme', function(req, res) {
  *    post:
  *      description: Dodaje novu temu
  *    parameters:
-       - name: body
-         in: body
-         schema:
-           type: object
-           properties:
-             idUser:
-              type: string
-             idTheme:
-              type: string
-             text:
-              type: string
-             timeCreated:
-              type: date
+ *      - name: body
+ *        in: body
+ *        schema:
+ *          type: object
+ *          properties:
+ *            idUser:
+ *             type: string
+ *            idTheme:
+ *             type: string
+ *            text:
+ *             type: string
+ *            timeCreated:
+ *             type: date
  */
 app.post('/addComment', function(req, res) {
     db.comment.create({idUser: req.body.IdUser, idTheme: req.body.IdTheme, text: req.body.text, timeCreated: Date.now()}).then(([user, created]) => {
@@ -105,6 +105,34 @@ app.post('/addComment', function(req, res) {
           else{
               console.log("Greska");	
           }    	
+      });
+});
+
+    /**
+ * @swagger
+ * /closeTheme/:idTheme:
+ *    post:
+ *      description: Zatvara diskusiju na temu
+ *    parameters:
+ *      - name: body
+ *        in: body
+ *        schema:
+ *          type: object
+ *          properties:
+ *            idTheme:
+ *             type: string
+ */
+app.post('/closeTheme/:idTheme', function(req, res) {
+    db.theme.update({
+        closed: true
+          }, {
+        where: { idTheme: req.params.idTheme },
+        returning: true,
+        plain: true
+      })
+      .then(function (result) {
+        res.writeHead(200,{"Content-Type":"application/json"});
+        res.end();
       });
 });
 }
