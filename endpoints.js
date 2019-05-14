@@ -63,5 +63,22 @@ app.get('/getComments/:idTeme', function(req, res) {
 			res.end(odgovor);
     });
 });
+ 
+app.post('/addcomment', function(req, res) {
+	var idTheme = req.body.idTheme;
+	var idUser = req.body.idUser;	 
+	var text = req.body.text;
+	var timeCreated = Date.now();
+
+    db.comment.findOrCreate({where:  {} , defaults:{idTheme: req.body.idTheme, text: req.body.text,
+     timeCreated:Date.now(), idUser:req.body.idUser}}).then(([ created]) => {
+          if (created) {
+              console.log("Uspjesno kreirana tema");
+          }
+          else{
+              console.log("Tema sa datim nazivom vec postoji");	
+          }    	
+      });
+});
 }
 module.exports = initializeEndpoints;
