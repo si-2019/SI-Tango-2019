@@ -98,9 +98,11 @@ app.get('/getComments/:idTheme', function(req, res) {
  *             type: date
  */
 app.post('/addComment', function(req, res) {
-    db.comment.create({idUser: req.body.IdUser, idTheme: req.body.IdTheme, text: req.body.text, timeCreated: Date.now()}).then(([user, created]) => {
+    console.log(req.body);
+    db.comment.create({idUser: req.body.idUser, idTheme: req.body.idTheme, text: req.body.text, timeCreated: Date.now()}).then(function(created) {
           if (created) {
               console.log("Uspjesno kreiran komentar");
+              res.end();
           }
           else{
               console.log("Greska");	
