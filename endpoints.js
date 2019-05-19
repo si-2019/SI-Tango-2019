@@ -215,5 +215,66 @@ app.post('/editTheme', function(req, res) {
         res.end();
       });
 });
+=======
+   /**
+ * @swagger
+ * /addReply:
+ *    post:
+ *      description: Dodaje novi odgovor
+ *    parameters:
+       - name: body
+         in: body
+         schema:
+           type: object
+           properties:
+             idComment:
+              type: string
+             idUserCreator:
+              type: string
+             text:
+              type: string
+             timeCreated:
+              type: date
+ */
+app.post('/addReply', function(req, res) {
+    db.comment.create({idComment: req.body.IdComment, idUserCreator: req.body.IdUser, text: req.body.text, timeCreated: Date.now()}).then(([user, created]) => {
+          if (created) {
+              console.log("Uspjesno kreiran odgovor");
+          }
+          else{
+              console.log("Greska");	
+          }    	
+      });
+});
+
+    /**
+ * @swagger
+ * /getReplys
+ *    get:
+ *      description: Dobavlja odgovore na komentare
+ */
+app.get('/getReplys', function(req, res) {
+    var replysResp = [];
+	promise = [];
+	promise2 = [];
+	promise.push(
+		db.comment.findAll().then(function (comments) {
+			replysResp = JSON.parse(JSON.stringify(comments));
+			return new Promise();
+		}).catch(function(err){})
+	);
+	Promise.all(promise).then(function (teme){
+		replysResp.forEach(t => {
+			promise2.push(db.reply.findAll({where: {idComment: t.idComment}}).then(function (listaOdgovora){
+				t.odgovori = listaOdgovora;
+				return new Promise();
+			}).catch(function(err){}));
+		});
+		Promise.all(promise2).then(function(item){
+			res.send(replysResp);
+		});
+	});
+});
+
 }
 module.exports = initializeEndpoints;
