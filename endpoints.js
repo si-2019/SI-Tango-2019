@@ -18,7 +18,7 @@ app.post('/addTheme', function(req, res) {
 });
    /**
  * @swagger
- * //getThemes/:idPredmeta:
+ * /getThemes/:idPredmeta:
  *    get:
  *      description: Vraca temu za predmet sa id-em idPredmeta 
  */
@@ -56,17 +56,17 @@ app.get('/getThemes/:idPredmeta', function(req, res) {
 
     /**
  * @swagger
- * /getComments/:idTheme
+ * /getComments/:idTheme:
  *    get:
  *      description: Dobavlja komentare
  * 	  parameters:
-       - name: params
-         in: req.params
-         schema:
-           type: object
-           properties:
-             idTheme:
-              type: string
+ *      - name: params
+ *        in: req.params
+ *        schema:
+ *          type: object
+ *          properties:
+ *            idTheme:
+ *             type: string
  */
 app.get('/getComments/:idTheme', function(req, res) {
 	var idTeme = req.params.idTheme;
@@ -79,23 +79,23 @@ app.get('/getComments/:idTheme', function(req, res) {
  
     /**
  * @swagger
- * /addTheme:
+ * /addComment:
  *    post:
- *      description: Dodaje novu temu
+ *      description: Dodaje novi komentar
  *    parameters:
-       - name: body
-         in: body
-         schema:
-           type: object
-           properties:
-             idUser:
-              type: string
-             idTheme:
-              type: string
-             text:
-              type: string
-             timeCreated:
-              type: date
+ *      - name: body
+ *        in: body
+ *        schema:
+ *          type: object
+ *          properties:
+ *            idUser:
+ *             type: string
+ *            idTheme:
+ *             type: string
+ *            text:
+ *             type: string
+ *            timeCreated:
+ *             type: date
  */
 app.post('/addComment', function(req, res) {
     db.comment.create({idUser: req.body.IdUser, idTheme: req.body.IdTheme, text: req.body.text, timeCreated: Date.now()}).then(([user, created]) => {
@@ -107,5 +107,163 @@ app.post('/addComment', function(req, res) {
           }    	
       });
 });
+
+    /**
+ * @swagger
+ * /closeTheme/:idTheme:
+ *    post:
+ *      description: Zatvara diskusiju na temu
+ *    parameters:
+ *      - name: body
+ *        in: body
+ *        schema:
+ *          type: object
+ *          properties:
+ *            idTheme:
+ *             type: string
+ */
+app.post('/closeTheme/:idTheme', function(req, res) {
+    db.theme.update({
+        closed: true
+          }, {
+        where: { idTheme: req.params.idTheme },
+        returning: true,
+        plain: true
+      })
+      .then(function (result) {
+        res.writeHead(200,{"Content-Type":"application/json"});
+        res.end();
+      });
+});
+
+   /**
+ * @swagger
+ * /addReply:
+ *    post:
+ *      description: Dodaje novi odgovor
+ *    parameters:
+ *        name: body
+ *        in: body
+ *        schema:
+ *          type: object
+ *          properties:
+ *           idComment:
+ *             type: string
+ *           idUserCreator:    
+ *             type: string
+ *           text:
+ *             type: string
+ *           timeCreated:
+ *             type: date
+ */
+app.post('/addReply', function(req, res) {
+    db.comment.create({idComment: req.body.IdComment, idUserCreator: req.body.IdUser, text: req.body.text, timeCreated: Date.now()}).then(([user, created]) => {
+          if (created) {
+              console.log("Uspjesno kreiran odgovor");
+          }
+          else{
+              console.log("Greska");	
+          }    	
+      });
+});
+
+    /**
+ * @swagger
+ * /getReplys:
+ *    get:
+ *      description: Dobavlja odgovore na komentare
+ */
+app.get('/getReplys', function(req, res) {
+    var replysResp = [];
+	promise = [];
+	promise2 = [];
+	promise.push(
+		db.comment.findAll().then(function (comments) {
+			replysResp = JSON.parse(JSON.stringify(comments));
+			return new Promise();
+		}).catch(function(err){})
+	);
+	Promise.all(promise).then(function (teme){
+		replysResp.forEach(t => {
+			promise2.push(db.reply.findAll({where: {idComment: t.idComment}}).then(function (listaOdgovora){
+				t.odgovori = listaOdgovora;
+				return new Promise();
+			}).catch(function(err){}));
+		});
+		Promise.all(promise2).then(function(item){
+			res.send(replysResp);
+		});
+	});
+});
+   /**
+ * @swagger
+ * /setSticky:
+ *    post:
+ *      description: Postavlja temu kao bitnu
+ *    parameters:
+ *        name: body
+ *        in: body
+ *        schema:
+ *          type: object
+ *          properties:
+ *           idTheme:
+ *             type: string
+ *           idUser:    
+ *             type: string
+ */
+app.post('/setSticky',function(req, res){
+  console.log(req.body);
+  db.sticky.findOrCreate({where: {idTheme: req.body.idTheme} , defaults: {idUser: req.body.idUser, set: true}}).then(([user, created]) => {
+          if (created) {
+              console.log("Uspjesno kreiran sticky");
+          }
+          else{
+              user.update({set: true});
+              console.log("Sticky uspjesno update-ovan"); 
+          }
+          res.writeHead(200,{"Content-Type":"application/json"});
+          res.end();
+        });     
+});
+   /**
+ * @swagger
+ * /skiniSticky:
+ *    post:
+ *      description: Postavlja temu kao bitnu
+ *    parameters:
+ *        name: body
+ *        in: body
+ *        schema:
+ *          type: object
+ *          properties:
+ *           idTheme:
+ *             type: string
+ *           idUser:    
+ *             type: string
+ */
+app.post('/skiniSticky',function(req, res){
+  console.log(req.body);
+  db.sticky.findOrCreate({where: {idTheme: req.body.idTheme} , defaults: {idUser: req.body.idUser, set: false}}).then(([user, created]) => {
+          if (created) {
+              console.log("Uspjesno kreiran sticky");
+          }
+          else{
+              user.update({set: false});
+              console.log("Sticky uspjesno update-ovan"); 
+          }
+          res.writeHead(200,{"Content-Type":"application/json"});
+          res.end();
+        });     
+});
+
+app.get('/getStickyThemes',function(req, res) {
+  db.sticky.findAll({where: {set: true}}).then(function(themes) {
+      replysResp = JSON.parse(JSON.stringify(themes));
+      res.send(replysResp);
+    });
+});
+
+
+
 }
 module.exports = initializeEndpoints;

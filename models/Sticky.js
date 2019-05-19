@@ -5,7 +5,8 @@ module.exports = function(sequelize, DataTypes) {
     idSticky: {
       type: DataTypes.INTEGER(10),
       allowNull: false,
-      primaryKey: true
+      primaryKey: true,
+      autoIncrement: true
     },
     idTheme: {
       type: DataTypes.INTEGER(10),
