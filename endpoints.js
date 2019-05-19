@@ -222,19 +222,19 @@ app.post('/editTheme', function(req, res) {
  *    post:
  *      description: Dodaje novi odgovor
  *    parameters:
-       - name: body
-         in: body
-         schema:
-           type: object
-           properties:
-             idComment:
-              type: string
-             idUserCreator:
-              type: string
-             text:
-              type: string
-             timeCreated:
-              type: date
+ *        name: body
+ *        in: body
+ *        schema:
+ *          type: object
+ *          properties:
+ *           idComment:
+ *             type: string
+ *           idUserCreator:    
+ *             type: string
+ *           text:
+ *             type: string
+ *           timeCreated:
+ *             type: date
  */
 app.post('/addReply', function(req, res) {
     db.comment.create({idComment: req.body.IdComment, idUserCreator: req.body.IdUser, text: req.body.text, timeCreated: Date.now()}).then(([user, created]) => {
@@ -249,7 +249,7 @@ app.post('/addReply', function(req, res) {
 
     /**
  * @swagger
- * /getReplys
+ * /getReplys:
  *    get:
  *      description: Dobavlja odgovore na komentare
  */
@@ -275,6 +275,76 @@ app.get('/getReplys', function(req, res) {
 		});
 	});
 });
+
+   /**
+ * @swagger
+ * /setSticky:
+ *    post:
+ *      description: Postavlja temu kao bitnu
+ *    parameters:
+ *        name: body
+ *        in: body
+ *        schema:
+ *          type: object
+ *          properties:
+ *           idTheme:
+ *             type: string
+ *           idUser:    
+ *             type: string
+ */
+app.post('/setSticky',function(req, res){
+  console.log(req.body);
+  db.sticky.findOrCreate({where: {idTheme: req.body.idTheme} , defaults: {idUser: req.body.idUser, set: true}}).then(([user, created]) => {
+          if (created) {
+              console.log("Uspjesno kreiran sticky");
+          }
+          else{
+              user.update({set: true});
+              console.log("Sticky uspjesno update-ovan"); 
+          }
+          res.writeHead(200,{"Content-Type":"application/json"});
+          res.end();
+        });     
+});
+   /**
+ * @swagger
+ * /skiniSticky:
+ *    post:
+ *      description: Postavlja temu kao bitnu
+ *    parameters:
+ *        name: body
+ *        in: body
+ *        schema:
+ *          type: object
+ *          properties:
+ *           idTheme:
+ *             type: string
+ *           idUser:    
+ *             type: string
+ */
+app.post('/skiniSticky',function(req, res){
+  console.log(req.body);
+  db.sticky.findOrCreate({where: {idTheme: req.body.idTheme} , defaults: {idUser: req.body.idUser, set: false}}).then(([user, created]) => {
+          if (created) {
+              console.log("Uspjesno kreiran sticky");
+          }
+          else{
+              user.update({set: false});
+              console.log("Sticky uspjesno update-ovan"); 
+          }
+          res.writeHead(200,{"Content-Type":"application/json"});
+          res.end();
+        });     
+});
+
+app.get('/getStickyThemes',function(req, res) {
+  db.sticky.findAll({where: {set: true}}).then(function(themes) {
+      replysResp = JSON.parse(JSON.stringify(themes));
+      res.send(replysResp);
+    });
+});
+
+
 
 }
 module.exports = initializeEndpoints;
