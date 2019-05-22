@@ -78,7 +78,12 @@ app.get('/getThemes/:idPredmeta', function(req, res) {
 				return new Promise();
 			}).catch(function(err){}));
 			promise2.push(db.korisnik.findOne({ where: { id: t.idUser } , attributes: ['id', 'ime', 'prezime','fotografija']}).then(function (user) {
-				t.korisnik=user;
+                t.korisnik=user;
+                const blob = user.fotografija;
+                var buffer = Buffer.from(blob);
+                var bufferBase64 = buffer.toString('base64');
+                var url = "data:image/png;base64," + buffer;
+                t.korisnik.fotografija = url;
 				return new Promise();
 			}).catch(function(err){
 			//	console.log(err);
