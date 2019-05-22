@@ -1,4 +1,5 @@
 const initializeEndpoints = (app,db) => {
+    const Opp = db.Sequelize.Op;
     /**
  * @swagger
  * /addTheme:
@@ -349,6 +350,72 @@ app.get('/getStickyThemes',function(req, res) {
     });
 });
 
+
+
+   /**
+ * @swagger
+ * /searchComment/:commentName:
+ *    get:
+ *      description: Traži komentare sa datim nazivom
+ * 	  parameters:
+ *      - name: params
+ *        in: req.params
+ *        schema:
+ *          type: object
+ *          properties:
+ *            commentName:
+ *             type: string
+ *      - name: body
+ *        in: req.body
+ *        schema:
+ *          type: object
+ *          properties:
+ *            idTheme:
+ *              type: string
+ *            brPaginacije:
+ *              type: string
+ */
+app.get('/searchComment/:commentName', function(req, res) {
+    var idTeme = req.body.idTheme;
+    var nazivKomentara =  '%' + req.params.commentName + '%';
+    var paginacija = req.body.brPaginacije * 10;
+
+    db.comment.findAll({ where: { 
+        text: { [Opp.like]:  nazivKomentara  }, idTheme: idTeme } }).then(function (komentariLista) {
+        var lista = komentariLista.slice(paginacija - 9, paginacija);
+        var odgovor = JSON.stringify(lista);
+        res.writeHead(200,{"Content-Type":"application/json"});
+        res.end(odgovor);
+    });
+});
+
+   /**
+ * @swagger
+ * /paginacijaComment:
+ *    get:
+ *      description: Daje komentare u ovisnosti od paginacije
+ * 	  parameters:
+ *      - name: body
+ *        in: req.body
+ *        schema:
+ *          type: object
+ *          properties:
+ *            idTheme:
+ *              type: string
+ *            brPaginacije:
+ *              type: string
+ */
+app.get('/paginacijaComment', function(req, res) {
+    var idTeme = req.body.idTheme;
+    var paginacija = req.body.brPaginacije * 10;
+
+    db.comment.findAll({ where: { idTheme: idTeme } }).then(function (komentariLista) {
+        var lista = komentariLista.slice(paginacija - 9, paginacija);
+        var odgovor = JSON.stringify(lista);
+        res.writeHead(200,{"Content-Type":"application/json"});
+        res.end(odgovor);
+    });
+});
 
 
 }
