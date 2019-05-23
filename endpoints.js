@@ -448,7 +448,31 @@ app.get('/paginacijaComment', function(req, res) {
         res.end(odgovor);
     });
 });
+   /**
+ * @swagger
+ * /searchTema/:nazivTeme:
+ *    get:
+ *      description: Traži teme sa datim nazivom
+ * 	  parameters:
+ *      - name: params
+ *        in: req.params
+ *        schema:
+ *          type: object
+ *          properties:
+ *            nazivTeme:
+ *             type: string
+ */
 
+app.get('/searchTema/:nazivTeme', function(req, res) {
+    var idTeme = req.body.idTheme;
+    var naziv =  '%' + req.params.nazivTeme + '%';
+    db.theme.findAll({ where: { 
+        title: { [Opp.like]:  naziv  } } }).then(function (listaTema) {
+        var odgovor = JSON.stringify(listaTema);
+        res.writeHead(200,{"Content-Type":"application/json"});
+        res.end(odgovor);
+    });
+});
 
 }
 module.exports = initializeEndpoints;
