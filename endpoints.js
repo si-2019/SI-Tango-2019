@@ -243,7 +243,7 @@ app.post('/editTheme', function(req, res) {
  *             type: date
  */
 app.post('/addReply', function(req, res) {
-    db.comment.create({idComment: req.body.IdComment, idUserCreator: req.body.IdUser, text: req.body.text, timeCreated: Date.now()}).then(([user, created]) => {
+    db.reply.create({idComment: req.body.idComment, idUserCreator: req.body.idUser, text: req.body.text, timeCreated: Date.now()}).then(([user, created]) => {
           if (created) {
               console.log("Uspjesno kreiran odgovor");
           }
@@ -259,12 +259,15 @@ app.post('/addReply', function(req, res) {
  *    get:
  *      description: Dobavlja odgovore na komentare
  */
-app.get('/getReplys', function(req, res) {
+app.get('/getReplys/:idTheme', function(req, res) {
     var replysResp = [];
+    var idTeme = req.params.idTheme;
 	promise = [];
-	promise2 = [];
+    promise2 = [];
+    promise3 = [];
+
 	promise.push(
-		db.comment.findAll().then(function (comments) {
+		db.comment.findAll({ where: { idTheme: idTeme } }).then(function (comments) {
 			replysResp = JSON.parse(JSON.stringify(comments));
 			return new Promise();
 		}).catch(function(err){})
@@ -272,12 +275,41 @@ app.get('/getReplys', function(req, res) {
 	Promise.all(promise).then(function (teme){
 		replysResp.forEach(t => {
 			promise2.push(db.reply.findAll({where: {idComment: t.idComment}}).then(function (listaOdgovora){
-				t.odgovori = listaOdgovora;
+                t.odgovori = JSON.parse(JSON.stringify(listaOdgovora));
+                t.odgovori.forEach(y => {
+
+                promise3.push((db.korisnik.findOne({ where: { id: y.idUserCreator } , attributes: ['id', 'ime', 'prezime','fotografija']}).then(function (user) {
+                    y.korisnik=user;
+                    const blob = user.fotografija;
+                    var buffer = Buffer.from(blob);
+                    var bufferBase64 = buffer.toString('base64');
+                    var url = "data:image/png;base64," + buffer;
+                    y.korisnik.fotografija = url;
+                    return new Promise();
+                }).catch(function(err){
+                //	console.log(err);
+                })));
+            });
 				return new Promise();
-			}).catch(function(err){}));
+            }).catch(function(err){}));
+            promise2.push(db.korisnik.findOne({ where: { id: t.idUser } , attributes: ['id', 'ime', 'prezime','fotografija']}).then(function (user) {
+                t.korisnik=user;
+                const blob = user.fotografija;
+                var buffer = Buffer.from(blob);
+                var bufferBase64 = buffer.toString('base64');
+                var url = "data:image/png;base64," + buffer;
+                t.korisnik.fotografija = url;
+				return new Promise();
+			}).catch(function(err){
+			//	console.log(err);
+            }));
+        
 		});
 		Promise.all(promise2).then(function(item){
-			res.send(replysResp);
+            Promise.all(promise3).then(function(item){
+                
+            res.send(replysResp);
+            })
 		});
 	});
 });
