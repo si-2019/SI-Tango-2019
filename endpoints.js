@@ -442,7 +442,7 @@ app.get('/paginacijaComment', function(req, res) {
     var paginacija = req.body.brPaginacije * 10;
 
     db.comment.findAll({ where: { idTheme: idTeme } }).then(function (komentariLista) {
-        var lista = komentariLista.slice(paginacija - 9, paginacija);
+        var lista = komentariLista.slice(paginacija - 10, paginacija);
         var odgovor = JSON.stringify(lista);
         res.writeHead(200,{"Content-Type":"application/json"});
         res.end(odgovor);
