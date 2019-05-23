@@ -5,7 +5,9 @@ module.exports = function(sequelize, DataTypes) {
     idReply: {
       type: DataTypes.INTEGER(10),
       allowNull: false,
-      primaryKey: true
+      primaryKey: true,
+      autoIncrement: true
+
     },
     idComment: {
       type: DataTypes.INTEGER(10),
@@ -20,7 +22,7 @@ module.exports = function(sequelize, DataTypes) {
       allowNull: false,
       references: {
         model: 'Korisnik',
-        key: 'idkorisnik'
+        key: 'id'
       }
     },
     text: {
