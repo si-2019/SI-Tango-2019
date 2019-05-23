@@ -243,7 +243,7 @@ app.post('/editTheme', function(req, res) {
  *             type: date
  */
 app.post('/addReply', function(req, res) {
-    db.reply.create({idComment: req.body.idComment, idUserCreator: req.body.idUser, text: req.body.text, timeCreated: Date.now()}).then(([user, created]) => {
+    db.reply.create({idComment: req.body.idComment, idUserCreator: req.body.idUser, text: req.body.text, timeCreated: Date.now()}).then(( created) => {
           if (created) {
               console.log("Uspjesno kreiran odgovor");
           }
