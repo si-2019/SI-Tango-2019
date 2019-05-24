@@ -401,6 +401,12 @@ app.post('/skiniSticky',function(req, res){
           res.end();
         });     
 });
+    /**
+ * @swagger
+ * /getStickyThemes:
+ *    get:
+ *      description: Dobavlja teme koje su sticky
+ */
 
 app.get('/getStickyThemes',function(req, res) {
   db.sticky.findAll({where: {set: true}}).then(function(themes) {
@@ -491,7 +497,6 @@ app.get('/paginacijaComment', function(req, res) {
  */
 
 app.get('/searchTema/:nazivTeme', function(req, res) {
-    var idTeme = req.body.idTheme;
     var naziv =  '%' + req.params.nazivTeme + '%';
     db.theme.findAll({ where: { 
         title: { [Opp.like]:  naziv  } } }).then(function (listaTema) {
@@ -500,6 +505,57 @@ app.get('/searchTema/:nazivTeme', function(req, res) {
         res.end(odgovor);
     });
 });
+
+
+
+    /**
+ * @swagger
+ * /getCommentsAZ/:idTheme:
+ *    get:
+ *      description: Dobavlja komentare sortirani A-Z
+ * 	  parameters:
+ *      - name: params
+ *        in: req.params
+ *        schema:
+ *          type: object
+ *          properties:
+ *            idTheme:
+ *             type: string
+ */
+
+app.get('/getCommentsAZ/:idTheme', function(req, res) {
+	var idTeme = req.params.idTheme;
+    db.comment.findAll({ where: { idTheme: idTeme }, order: ['text']}).then(function (komentariLista) {
+			var odgovor = JSON.stringify(komentariLista);
+			res.writeHead(200,{"Content-Type":"application/json"});
+			res.end(odgovor);
+    });
+});
+
+    /**
+ * @swagger
+ * /getCommentsCreated/:idTheme:
+ *    get:
+ *      description: Dobavlja komentare sortirane po datumu kreiranja
+ * 	  parameters:
+ *      - name: params
+ *        in: req.params
+ *        schema:
+ *          type: object
+ *          properties:
+ *            idTheme:
+ *             type: string
+ */
+
+app.get('/getCommentsCreated/:idTheme', function(req, res) {
+	var idTeme = req.params.idTheme;
+    db.comment.findAll({ where: { idTheme: idTeme }, order: ['timeCreated']}).then(function (komentariLista) {
+			var odgovor = JSON.stringify(komentariLista);
+			res.writeHead(200,{"Content-Type":"application/json"});
+			res.end(odgovor);
+    });
+});
+
 
 }
 module.exports = initializeEndpoints;
