@@ -478,6 +478,11 @@ app.get('/getStickyThemes',function(req, res) {
  * /searchComment/:commentName:
  *    get:
  *      description: Traži komentare sa datim nazivom
+ *      responses:
+ *             200:
+ *               description: Dohvaćena lista traženih komentara
+ *             400:
+ *               description: Došlo je do greške
  * 	  parameters:
  *      - name: params
  *        in: req.params
@@ -495,11 +500,6 @@ app.get('/getStickyThemes',function(req, res) {
  *              type: string
  *            brPaginacije:
  *              type: string
- *      responses:
- *             200:
- *               description: Dohvaćena lista traženih komentara
- *             400:
- *               description: Došlo je do greške
  */
 app.get('/searchComment/:commentName', function(req, res) {
     var idTeme = req.body.idTheme;
@@ -520,6 +520,11 @@ app.get('/searchComment/:commentName', function(req, res) {
  * /paginacijaComment:
  *    get:
  *      description: Daje komentare u ovisnosti od paginacije
+ *      responses:
+ *             200:
+ *               description: Dohvaćena lista 10 komentara za paginaciju
+ *             400:
+ *               description: Došlo je do greške
  * 	  parameters:
  *      - name: body
  *        in: req.body
@@ -530,11 +535,6 @@ app.get('/searchComment/:commentName', function(req, res) {
  *              type: string
  *            brPaginacije:
  *              type: string
- *      responses:
- *             200:
- *               description: Dohvaćena lista 10 komentara za paginaciju
- *             400:
- *               description: Došlo je do greške
  */
 app.get('/paginacijaComment', function(req, res) {
     var idTeme = req.body.idTheme;
@@ -552,6 +552,11 @@ app.get('/paginacijaComment', function(req, res) {
  * /searchTema/:nazivTeme:
  *    get:
  *      description: Traži teme sa datim nazivom
+ *      responses:
+ *             200:
+ *               description: Lista pronađenih tema sa datim nazivom
+ *             400:
+ *               description: Došlo je do greške
  * 	  parameters:
  *      - name: params
  *        in: req.params
@@ -560,11 +565,7 @@ app.get('/paginacijaComment', function(req, res) {
  *          properties:
  *            nazivTeme:
  *             type: string
- *      responses:
- *             200:
- *               description: Lista pronađenih tema sa datim nazivom
- *             400:
- *               description: Došlo je do greške
+
  */
 
 app.get('/searchTema/:nazivTeme', function(req, res) {
@@ -584,6 +585,11 @@ app.get('/searchTema/:nazivTeme', function(req, res) {
  * /getCommentsAZ/:idTheme:
  *    get:
  *      description: Dobavlja komentare sortirani A-Z
+ *      responses:
+ *             200:
+ *               description: Lista sortiranih komentara A-Z
+ *             400:
+ *               description: Došlo je do greške
  * 	  parameters:
  *      - name: params
  *        in: req.params
@@ -592,11 +598,7 @@ app.get('/searchTema/:nazivTeme', function(req, res) {
  *          properties:
  *            idTheme:
  *             type: string
- *      responses:
- *             200:
- *               description: Lista sortiranih komentara A-Z
- *             400:
- *               description: Došlo je do greške
+
  */
 
 app.get('/getCommentsAZ/:idTheme', function(req, res) {
@@ -613,6 +615,11 @@ app.get('/getCommentsAZ/:idTheme', function(req, res) {
  * /getCommentsCreated/:idTheme:
  *    get:
  *      description: Dobavlja komentare sortirane po datumu kreiranja
+ *      responses:
+ *             200:
+ *               description: Lista sortiranih komentara po datumu
+ *             400:
+ *               description: Došlo je do greške
  * 	  parameters:
  *      - name: params
  *        in: req.params
@@ -621,11 +628,7 @@ app.get('/getCommentsAZ/:idTheme', function(req, res) {
  *          properties:
  *            idTheme:
  *             type: string
- *      responses:
- *             200:
- *               description: Lista sortiranih komentara po datumu
- *             400:
- *               description: Došlo je do greške
+
  */
 
 app.get('/getCommentsCreated/:idTheme', function(req, res) {
