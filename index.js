@@ -33,6 +33,11 @@ app.get('/getUser/:idUser', function(req, res) {
 	var idUser = req.params.idUser;
 	promise = [];
 		db.korisnik.findOne({ where: { id: idUser } , attributes: ['id', 'ime', 'prezime','fotografija']}).then(function (user) {
+			const blob = user.fotografija;
+			var buffer = Buffer.from(blob);
+			var bufferBase64 = buffer.toString('base64');
+			var url = "data:image/png;base64," + buffer;
+			user.fotografija = url;
 			res.send(user);
 		}).catch(function(err){
 			console.log(err);
