@@ -111,6 +111,11 @@ app.get('/getThemes/:idPredmeta', function(req, res) {
  *          properties:
  *            idTheme:
  *             type: string
+ *          responses:
+ *             200:
+ *               description: Vracena lista komentara
+ *             400:
+ *               description: Došlo je do greške
  */
 app.get('/getComments/:idTheme', function(req, res) {
 	var idTeme = req.params.idTheme;
@@ -140,6 +145,11 @@ app.get('/getComments/:idTheme', function(req, res) {
  *             type: string
  *            timeCreated:
  *             type: date
+ *            responses:
+ *             200:
+ *               description: Komentar je dodan u bazu
+ *             400:
+ *               description: Došlo je do greške
  */
 app.post('/addComment', function(req, res) {
     console.log(req.body);
@@ -167,6 +177,11 @@ app.post('/addComment', function(req, res) {
  *          properties:
  *            idTheme:
  *             type: string
+ *          responses:
+ *             200:
+ *               description: Tema je zatvorena
+ *             400:
+ *               description: Došlo je do greške
  */
 app.post('/closeTheme/:idTheme', function(req, res) {
     db.theme.update({
@@ -203,6 +218,11 @@ app.post('/closeTheme/:idTheme', function(req, res) {
  *             type: string
  *            closed:
  *             type: date
+ *            responses:
+ *             200:
+ *               description: Tema je uređena
+ *             400:
+ *               description: Došlo je do greške
  */
 app.post('/editTheme', function(req, res) {
     db.theme.update({
@@ -241,6 +261,11 @@ app.post('/editTheme', function(req, res) {
  *             type: string
  *           timeCreated:
  *             type: date
+ *          responses:
+ *             200:
+ *               description: Odgovor je dodan u bazu
+ *             400:
+ *               description: Došlo je do greške
  */
 app.post('/addReply', function(req, res) {
     db.reply.create({idComment: req.body.idComment, idUserCreator: req.body.idUser, text: req.body.text, timeCreated: Date.now()}).then(( created) => {
@@ -258,6 +283,19 @@ app.post('/addReply', function(req, res) {
  * /getReplys:
  *    get:
  *      description: Dobavlja odgovore na komentare
+ *    parameters:
+ *        name: params
+ *        in: req.params
+ *        schema:
+ *          type: object
+ *          properties:
+ *           idTheme:
+ *             type: string
+ *          responses:
+ *             200:
+ *               description: Dohvaćena lista odgovora
+ *             400:
+ *               description: Došlo je do greške
  */
 app.get('/getReplys/:idTheme', function(req, res) {
     var replysResp = [];
@@ -329,6 +367,11 @@ app.get('/getReplys/:idTheme', function(req, res) {
  *             type: string
  *           idUser:    
  *             type: string
+ *           responses:
+ *             200:
+ *               description: Postavljena sticky thema
+ *             400:
+ *               description: Došlo je do greške
  */
 app.post('/setSticky',function(req, res){
   console.log(req.body);
@@ -359,6 +402,11 @@ app.post('/setSticky',function(req, res){
  *             type: string
  *           idUser:    
  *             type: string
+ *          responses:
+ *             200:
+ *               description: Uklonjena sticky thema
+ *             400:
+ *               description: Došlo je do greške
  */
 app.post('/skiniSticky',function(req, res){
   console.log(req.body);
@@ -379,6 +427,11 @@ app.post('/skiniSticky',function(req, res){
  * /getStickyThemes:
  *    get:
  *      description: Dobavlja teme koje su sticky
+ *      responses:
+ *             200:
+ *               description: Dohvaćena lista sticky thema
+ *             400:
+ *               description: Došlo je do greške
  */
 
 app.get('/getStickyThemes',function(req, res) {
@@ -412,6 +465,11 @@ app.get('/getStickyThemes',function(req, res) {
  *              type: string
  *            brPaginacije:
  *              type: string
+ *      responses:
+ *             200:
+ *               description: Dohvaćena lista traženih komentara
+ *             400:
+ *               description: Došlo je do greške
  */
 app.get('/searchComment/:commentName', function(req, res) {
     var idTeme = req.body.idTheme;
@@ -442,6 +500,11 @@ app.get('/searchComment/:commentName', function(req, res) {
  *              type: string
  *            brPaginacije:
  *              type: string
+ *      responses:
+ *             200:
+ *               description: Dohvaćena lista 10 komentara za paginaciju
+ *             400:
+ *               description: Došlo je do greške
  */
 app.get('/paginacijaComment', function(req, res) {
     var idTeme = req.body.idTheme;
@@ -467,6 +530,11 @@ app.get('/paginacijaComment', function(req, res) {
  *          properties:
  *            nazivTeme:
  *             type: string
+ *      responses:
+ *             200:
+ *               description: Lista pronađenih tema sa datim nazivom
+ *             400:
+ *               description: Došlo je do greške
  */
 
 app.get('/searchTema/:nazivTeme', function(req, res) {
@@ -494,6 +562,11 @@ app.get('/searchTema/:nazivTeme', function(req, res) {
  *          properties:
  *            idTheme:
  *             type: string
+ *      responses:
+ *             200:
+ *               description: Lista sortiranih komentara A-Z
+ *             400:
+ *               description: Došlo je do greške
  */
 
 app.get('/getCommentsAZ/:idTheme', function(req, res) {
@@ -518,6 +591,11 @@ app.get('/getCommentsAZ/:idTheme', function(req, res) {
  *          properties:
  *            idTheme:
  *             type: string
+ *      responses:
+ *             200:
+ *               description: Lista sortiranih komentara po datumu
+ *             400:
+ *               description: Došlo je do greške
  */
 
 app.get('/getCommentsCreated/:idTheme', function(req, res) {

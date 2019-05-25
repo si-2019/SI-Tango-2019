@@ -28,6 +28,26 @@ app.use(bodyParser.urlencoded({ extended: true }));
 endpoints(app,db);
 swaggerDoc(app);
 
+   /**
+ * @swagger
+ * /getUser/:idUser:
+ *    get:
+ *      description: Vraca usera sa id-em idUser 
+ *    parameters:
+ *             - name: params
+ *               in: req.params
+ *               schema:
+ *               type: object
+ *               properties:
+ *                   idUser:
+ *                   type: string
+ *               responses:
+ *                  200:
+ *                      description: Vracen user
+ *                  400:
+ *                      description: Došlo je do greške
+
+ */
 
 app.get('/getUser/:idUser', function(req, res) {
 	var idUser = req.params.idUser;
@@ -42,6 +62,28 @@ app.get('/getUser/:idUser', function(req, res) {
 			console.log(err);
 		});
 });
+
+   /**
+ * @swagger
+ * /deleteTheme/:idTheme:
+ *    get:
+ *      description: Brise temu sa id-em idTheme 
+ *    parameters:
+ *             - name: params
+ *               in: req.params
+ *               schema:
+ *               type: object
+ *               properties:
+ *                   idTheme:
+ *                   type: string
+ *               responses:
+ *                  200:
+ *                      description: Vracen user
+ *                  400:
+ *                      description: Došlo je do greške
+
+ */
+
 app.delete('/deleteTheme/:idTheme', function(req, res) {
 	var idTeme = req.params.idTheme;
 		db.theme.destroy({ where: { idTheme: idTeme }});
