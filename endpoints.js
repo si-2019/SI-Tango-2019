@@ -361,12 +361,12 @@ app.get('/getReplys/:idTheme', function(req, res) {
  */
 app.post('/setSticky',function(req, res){
   console.log(req.body);
-  db.sticky.findOrCreate({where: {idTheme: req.body.idTheme} , defaults: {idUser: req.body.idUser, set: true}}).then(([user, created]) => {
+  db.sticky.findOrCreate({where: {idTheme: req.body.idTheme, idUser:req.body.IdUser} , defaults: {set: req.body.sticky}}).then(([user, created]) => {
           if (created) {
               console.log("Uspjesno kreiran sticky");
           }
           else{
-              user.update({set: true});
+              user.update({set: req.body.sticky});
               console.log("Sticky uspjesno update-ovan"); 
           }
           res.writeHead(200,{"Content-Type":"application/json"});
