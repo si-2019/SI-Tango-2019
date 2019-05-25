@@ -140,7 +140,9 @@ app.get('/getThemes/idPredmeta=:idPredmeta&idUser=:idUser', function(req, res) {
  *             type: string
  */
 app.get('/getComments/:idTheme', function(req, res) {
-	var idTeme = req.params.idTheme;
+    var idTeme = req.params.idTheme;
+    console.log("GETc");
+
     db.comment.findAll({ where: { idTheme: idTeme } }).then(function (komentariLista) {
 			var odgovor = JSON.stringify(komentariLista);
 			res.writeHead(200,{"Content-Type":"application/json"});
@@ -292,7 +294,7 @@ app.get('/getReplys/:idTheme', function(req, res) {
 	promise = [];
     promise2 = [];
     promise3 = [];
-
+    console.log("GETR" + idTeme) ;
 	promise.push(
 		db.comment.findAll({ where: { idTheme: idTeme } }).then(function (comments) {
 			replysResp = JSON.parse(JSON.stringify(comments));
@@ -334,7 +336,8 @@ app.get('/getReplys/:idTheme', function(req, res) {
 		});
 		Promise.all(promise2).then(function(item){
             Promise.all(promise3).then(function(item){
-                
+                console.log(replysResp);
+
                 res.send(replysResp);
             })
 		});
