@@ -28,16 +28,62 @@ app.use(bodyParser.urlencoded({ extended: true }));
 endpoints(app,db);
 swaggerDoc(app);
 
+   /**
+ * @swagger
+ * /getUser/:idUser:
+ *    get:
+ *      description: Vraca usera sa id-em idUser 
+ *    parameters:
+ *             - name: params
+ *               in: req.params
+ *               schema:
+ *               type: object
+ *               properties:
+ *                   idUser:
+ *                   type: string
+ *               responses:
+ *                  200:
+ *                      description: Vracen user
+ *                  400:
+ *                      description: Došlo je do greške
+
+ */
 
 app.get('/getUser/:idUser', function(req, res) {
 	var idUser = req.params.idUser;
 	promise = [];
 		db.korisnik.findOne({ where: { id: idUser } , attributes: ['id', 'ime', 'prezime','fotografija']}).then(function (user) {
-			res.send(user);
-		}).catch(function(err){
+			const blob = user.fotografija;
+			var buffer = Buffer.from(blob);
+			var bufferBase64 = buffer.toString('base64');
+			var url = "data:image/png;base64," + buffer;
+			user.fotografija = url;
+			res.send(user);		}).catch(function(err){
 			console.log(err);
 		});
 });
+
+   /**
+ * @swagger
+ * /deleteTheme/:idTheme:
+ *    get:
+ *      description: Brise temu sa id-em idTheme 
+ *    parameters:
+ *             - name: params
+ *               in: req.params
+ *               schema:
+ *               type: object
+ *               properties:
+ *                   idTheme:
+ *                   type: string
+ *               responses:
+ *                  200:
+ *                      description: Vracen user
+ *                  400:
+ *                      description: Došlo je do greške
+
+ */
+
 app.delete('/deleteTheme/:idTheme', function(req, res) {
 	var idTeme = req.params.idTheme;
 		db.theme.destroy({ where: { idTheme: idTeme }});
