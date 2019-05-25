@@ -61,8 +61,11 @@ app.post('/addTheme', function(req, res) {
  *                      description: Došlo je do greške
 
  */
-app.get('/getThemes/:idPredmeta', function(req, res) {
-	var idPredmeta = req.params.idPredmeta;
+
+app.get('/getThemes/idPredmeta=:idPredmeta&idUser=:idUser', function(req, res) {
+    var idPredmeta = req.params.idPredmeta;
+    var idUser = req.params.idUser;
+
 	var themesResp = [];
 	promise = [];
 	promise2 = [];
@@ -88,15 +91,41 @@ app.get('/getThemes/:idPredmeta', function(req, res) {
 				return new Promise();
 			}).catch(function(err){
 			//	console.log(err);
-			}));
+            }));
+            promise2.push( db.sticky.findOne({where: {idUser: idUser, idTheme:t.idTheme}}).then(function(sticky) {
+                    sticky = JSON.parse(JSON.stringify(sticky));
+
+                    console.log(sticky.set);    
+                    if(sticky){
+                        console.log("evo");
+
+                        t.sticky = sticky.set;
+                    }
+                    else t.sticky = false;
+                    return new Promise();
+
+              }).catch(function(err){
+                  if(err && t.sticky==undefined)
+                t.sticky = false;
+                }));
 		});
 
 				
 		Promise.all(promise2).then(function(item){
+            themesResp.sort(function(a,b){
+                if (a.sticky){
+                    return -1;
+                }
+                else if (b.sticky){
+                    return 1;
+                }
+                return 0;
+            });
 			res.send(themesResp);
 		});
 	});
 });
+
 
     /**
  * @swagger
