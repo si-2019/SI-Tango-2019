@@ -89,4 +89,4 @@ app.delete('/deleteTheme/:idTheme', function(req, res) {
 		db.theme.destroy({ where: { idTheme: idTeme }});
 });
 
-app.listen(PORT);
+app.listen(PORT, function(){ console.log('server successfully started on port '+PORT); });
