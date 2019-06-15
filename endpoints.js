@@ -39,7 +39,9 @@ app.post('/addTheme', function(req, res) {
           else{
               console.log("Tema sa datim nazivom vec postoji");	
           }    	
-      });
+      }).catch(function(err){
+      console.log(err);
+    });
 });
    /**
  * @swagger
@@ -152,6 +154,8 @@ app.get('/getComments/:idTheme', function(req, res) {
 			var odgovor = JSON.stringify(komentariLista);
 			res.writeHead(200,{"Content-Type":"application/json"});
 			res.end(odgovor);
+    }).catch(function(err){
+      console.log(err);
     });
 });
  
@@ -190,7 +194,9 @@ app.post('/addComment', function(req, res) {
           else{
               console.log("Greska");	
           }    	
-      });
+      }).catch(function(err){
+      console.log(err);
+    });
 });
 
     /**
@@ -223,7 +229,9 @@ app.post('/closeTheme/:idTheme', function(req, res) {
       .then(function (result) {
         res.writeHead(200,{"Content-Type":"application/json"});
         res.end();
-      });
+      }).catch(function(err){
+      console.log(err);
+    });
 });
 
 /**
@@ -268,7 +276,9 @@ app.post('/editTheme', function(req, res) {
       .then(function (result) {
         res.writeHead(200,{"Content-Type":"application/json"});
         res.end();
-      });
+      }).catch(function(err){
+      console.log(err);
+    });
 });
 
    /**
@@ -304,7 +314,9 @@ app.post('/addReply', function(req, res) {
           else{
               console.log("Greska");	
           }    	
-      });
+      }).catch(function(err){
+      console.log(err);
+    });
 });
 
     /**
@@ -415,7 +427,9 @@ app.post('/setSticky',function(req, res){
           }
           res.writeHead(200,{"Content-Type":"application/json"});
           res.end();
-        });     
+        }).catch(function(err){
+      console.log(err);
+    });     
 });
    /**
  * @swagger
@@ -450,7 +464,9 @@ app.post('/skiniSticky',function(req, res){
           }
           res.writeHead(200,{"Content-Type":"application/json"});
           res.end();
-        });     
+        }).catch(function(err){
+      console.log(err);
+    });     
 });
     /**
  * @swagger
@@ -468,6 +484,8 @@ app.get('/getStickyThemes',function(req, res) {
   db.sticky.findAll({where: {set: true}}).then(function(themes) {
       replysResp = JSON.parse(JSON.stringify(themes));
       res.send(replysResp);
+    }).catch(function(err){
+      console.log(err);
     });
 });
 
@@ -512,6 +530,8 @@ app.get('/searchComment/:commentName', function(req, res) {
         var odgovor = JSON.stringify(lista);
         res.writeHead(200,{"Content-Type":"application/json"});
         res.end(odgovor);
+    }).catch(function(err){
+      console.log(err);
     });
 });
 
@@ -545,6 +565,8 @@ app.get('/paginacijaComment', function(req, res) {
         var odgovor = JSON.stringify(lista);
         res.writeHead(200,{"Content-Type":"application/json"});
         res.end(odgovor);
+    }).catch(function(err){
+      console.log(err);
     });
 });
    /**
@@ -575,6 +597,8 @@ app.get('/searchTema/:nazivTeme', function(req, res) {
         var odgovor = JSON.stringify(listaTema);
         res.writeHead(200,{"Content-Type":"application/json"});
         res.end(odgovor);
+    }).catch(function(err){
+      console.log(err);
     });
 });
 
@@ -607,6 +631,8 @@ app.get('/getCommentsAZ/:idTheme', function(req, res) {
 			var odgovor = JSON.stringify(komentariLista);
 			res.writeHead(200,{"Content-Type":"application/json"});
 			res.end(odgovor);
+    }).catch(function(err){
+      console.log(err);
     });
 });
 
@@ -637,6 +663,8 @@ app.get('/getCommentsCreated/:idTheme', function(req, res) {
 			var odgovor = JSON.stringify(komentariLista);
 			res.writeHead(200,{"Content-Type":"application/json"});
 			res.end(odgovor);
+    }).catch(function(err){
+      console.log(err);
     });
 });
 

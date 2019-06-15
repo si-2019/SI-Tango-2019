@@ -86,7 +86,9 @@ app.get('/getUser/:idUser', function(req, res) {
 
 app.delete('/deleteTheme/:idTheme', function(req, res) {
 	var idTeme = req.params.idTheme;
-		db.theme.destroy({ where: { idTheme: idTeme }});
+		db.theme.destroy({ where: { idTheme: idTeme }}).catch(function(err){
+			console.log(err);
+		});
 });
 
 app.listen(PORT, function(){ console.log('server successfully started on port '+PORT); });
